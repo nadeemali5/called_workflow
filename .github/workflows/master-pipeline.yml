@@ -1,0 +1,38 @@
+name: Master Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/*'  # Trigger on any feature branch
+    tags:
+      - 'v*'  # Trigger on any version tag (e.g., v1.0, v2.0)
+
+jobs:
+  call-task-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Determine if running on a tag or branch
+        id: determine_branch_or_tag
+        run: |
+          echo "Ref: $GITHUB_REF"
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "::set-output name=branch_or_tag::${GITHUB_REF#refs/tags/}"
+          else
+            echo "::set-output name=branch_or_tag::${GITHUB_REF#refs/heads/}"
+          fi
+
+      - name: Call Task Pipeline 1 (if feature branch or master)
+        if: contains(github.ref, 'refs/heads/feature') || github.ref == 'refs/heads/master'
+        uses: ./.github/workflows/task-pipeline-1.yml
+        with:
+          branch_or_tag: ${{ steps.determine_branch_or_tag.outputs.branch_or_tag }}
+
+      - name: Call Task Pipeline 2 (if tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: ./.github/workflows/task-pipeline-2.yml
+        with:
+          branch_or_tag: ${{ steps.determine_branch_or_tag.outputs.branch_or_tag }}
