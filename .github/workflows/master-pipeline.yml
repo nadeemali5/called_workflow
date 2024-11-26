@@ -10,23 +10,8 @@ on:
 
 jobs:
   call-task-pipeline:
-    runs-on: windows-latest
+    uses: Hexa-UMB1/Called-Workflows-1/.github/workflows/maven.yml@main  # Reusable workflow call
+    with:
+      branch_or_tag: ${{ github.ref_name }}  # Pass the branch or tag name from the current push event
+    secrets: inherit  # If you have secrets in the repository, inherit them
 
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
-
-      - name: Determine if running on a tag or branch
-        id: determine_branch_or_tag
-        run: |
-          echo "Ref: $GITHUB_REF"
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            echo "::set-output name=branch_or_tag::${GITHUB_REF#refs/tags/}"
-          else
-            echo "::set-output name=branch_or_tag::${GITHUB_REF#refs/heads/}"
-          fi
-
-      - name: Call Maven Task Pipeline (from another repository)
-        uses: Hexa-UMB1/Called-Workflows-1/.github/workflows/maven.yml@main
-        with:
-          branch_or_tag: ${{ steps.determine_branch_or_tag.outputs.branch_or_tag }}
