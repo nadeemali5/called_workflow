@@ -27,6 +27,6 @@ jobs:
           fi
 
       - name: Call Maven Task Pipeline (from another repository)
-        uses: Hexa-UMB1/Called-Workflows-1/.github/workflows/maven.yml@<ref>
+        uses: Hexa-UMB1/Called-Workflows-1/.github/workflows/maven.yml@main
         with:
           branch_or_tag: ${{ steps.determine_branch_or_tag.outputs.branch_or_tag }}
