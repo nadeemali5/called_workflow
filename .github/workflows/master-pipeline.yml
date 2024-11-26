@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-task-pipeline:
-    uses: Hexa-UMB1/Called-Workflows-1/.github/workflows/maven.yml@main  # Reusable workflow call
+    uses: Hexa-UMB1/Called-Workflows-2/.github/workflows/maven.yml@main  # Reusable workflow call
     with:
       branch_or_tag: ${{ github.ref_name }}  # Pass the branch or tag name from the current push event
     secrets: inherit  # If you have secrets in the repository, inherit them
