@@ -3,14 +3,14 @@ name: Master Pipeline
 on:
   push:
     branches:
-      - master
+      - main
       - 'feature/*'  # Trigger on any feature branch
     tags:
       - 'v*'  # Trigger on any version tag (e.g., v1.0, v2.0)
 
 jobs:
   call-task-pipeline:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
 
       - name: Call Task Pipeline 1 (if feature branch or master)
         if: contains(github.ref, 'refs/heads/feature') || github.ref == 'refs/heads/master'
-        uses: ./.github/workflows/task-pipeline-1.yml
+        uses: ./.github/workflows/maven.yml
         with:
           branch_or_tag: ${{ steps.determine_branch_or_tag.outputs.branch_or_tag }}
 
